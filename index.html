@@ -75,7 +75,67 @@
                         * Public - BGP
                         * Prive - vRack
                     </section>
+                    <section data-markdown data-separator-notes="^Note:">
+                        ### On demarre ou ?
+                        ![OpenStack](data/neutron_software_ovh4.png)
+
+                        Note:
+                        * ARNAUD
+                        * API extensions
+                            * expose des infos / ressources supplementaires
+                            * implementation de nouvelles fonctionnalites
+                            * utilise aussi par les dev de neutron
+                        * Service plugin
+                            * ajout de fonctionnalites sur ML2
+                        * Type driver
+                            * vRack, au lieu de vlan, vxlan, etc.
+                        * Mechanism driver
+                            * Pilotage d'OVS, des regles openflow, etc.
+                            * Mais aussi pilotage de services comme quagga
+
+                        * Agent L2:
+                            * Full custom OVH: base sur OVS
+                            * Etabli la communication entre interface VM (tap) et le reseau.
+                            * configure les bridges
+                            * configure les regles de secu
+                            * configure la QoS
+
+                        * On ne touche pas au code de neutron lui meme !!!
+                    </section>
                 </section>
+
+                <section>
+                    <section data-markdown data-separator-notes="^Note:" data-background="data/networking2.gif">
+                        ## vRack
+                    </section>
+                    <section data-markdown>
+                        ### C'est quoi ?
+                    </section>
+                    <section data-markdown>
+                        ### Reseau prive de niveau 2
+                        ![vRack](data/schema-isolation.png)
+                    </section>
+                    <section data-markdown>
+                        ### 4000 VLAN possibles!
+                        ![vRack](data/schema-vlan.png)
+                    </section>
+                    <section data-markdown>
+                        ### Faible latence
+                        ###### 40ms entre DC en France et Canada
+                        ![vRack](data/schema-datacentre.png)
+                    </section>
+                    <section data-markdown>
+                        ### API et Manager
+                        ![vRack](data/api.gif)
+                    </section>
+                    <section data-markdown>
+                        ### Le vRack et OpenStack
+                        schema mix entre celui de slide 38 slawek et celui de confluence
+                    </section>
+                    <section data-markdown data-separator-notes="^Note:" data-background="data/ninja_vrack.gif" data-background-size="contain" data-background-color="black">
+                    </section>
+                </section>
+
                 <section>
                     <section data-markdown data-separator-notes="^Note:" data-background="data/networking1.gif">
                         ## BGP
@@ -85,283 +145,14 @@
                     </section>
                 </section>
 
-                <section>
-                    <section data-markdown data-separator-notes="^Note:" data-background="data/networking2.gif">
-                        ## vRack
-                    </section>
-                    <section data-markdown>
-                        # C'est quoi ?
-                        * Reseau prive de niveau 2
-                        * Possibilite de gerer des VLANs (4000)
-                        * API et manager Web
-                        * Faible latence
-                            * Roubaix (Fr) ==> Beauharnois (Ca) : 40ms
-                            * Roubaix (Fr) ==> Strasbourg (Fr) : 9ms
-                    </section>
-                    <section data-markdown>
-                        ![vRack](data/schema-isolation.png)
-                    </section>
-                    <section data-markdown>
-                        ![vRack](data/schema-vlan.png)
-                    </section>
-                    <section data-markdown>
-                        ![vRack](data/schema-datacentre.png)
-                    </section>
-
-                </section>
-
                 
 
 
 
 
 
-                <section>
-                    <h2>Scale</h2>
-                    <ol>
-                        <li>Jusqu'à combien ?</li>
-                        <li class="fragment">Pourquoi ?</li>
-                        <li class="fragment">Comment ?</li>
-                    </ol>
-                    <aside class="notes">
-                        <ul>
-                            <li>ARNAUD</li>
-                            <li>Nombre de host : jusqu'à 1500</li>
-                            <li>Nombre de région : 6 </li>
-                            <li>plus de 120 000  instances </li>
-
-                            <li>Mutualisation des ressources / problématique de cout</li>
-                            <li>Pour que les clients est la possilité de faire des grosses infrastructure</li>
-                            <li>Defi technique</li>
-                        </ul>
-                    </aside>
-                </section>
-                <section>
-                    <section data-markdown data-transition="fade-out">
-                        ## Architecture classique
-                        ![ArchiOpenStackClassique](data/openstack-logical-arch.png)
-                    </section>
-                    <section data-markdown data-transition="fade-out">
-                        ## Architecture classique
-                        ![ArchiOpenStackClassique](data/openstack-logical-arch-rabbit-cut.png)
-                    </section>
-                    <section data-markdown data-transition="fade-out">
-                        ## Architecture classique
-                        ![ArchiOpenStackClassique](data/openstack-logical-arch-mysql-cut.png)
-                    </section>
-                    <section data-markdown data-transition="fade-out">
-                        ## Architecture classique
-                        ![ArchiOpenStackClassique](data/openstack-logical-arch-nova-cut.png)
-                    </section>
-                    <section data-markdown data-transition="fade-out">
-                        ## Architecture classique
-                        ![ArchiOpenStackClassique](data/openstack-logical-arch-neutron-cut.png)
-                    </section>
-                    <section data-markdown data-transition="fade-out">
-                        ## Architecture classique
-                        ![ArchiOpenStackClassique](data/openstack-logical-arch-neutron.png)
-                    </section>
-                </section>
-                <section>
-                    <section data-markdown data-background="data/rabbit.gif">
-                        ## RabbitMQ
-                    </section>
-                    <section data-markdown data-separator-notes="^Note:">
-                        ### Cluster
-                        * minimum 3 noeuds
-
-                        Note:
-                        * ARNAUD
-                        * Au départ 2 noeuds
-                        * problème déconseillé dans un mode cluster
-                    </section>
-                    <section data-markdown data-separator-notes="^Note:">
-                        ### Tuning de conf
-                        * pause_minority VS autoheal
-                        * sysctl
-
-                        Note:
-                        * ARNAUD
-                        * pause_minority c'est mieux pour nous
-                        * augmentation des timeout TCP
-
-                        * impact d'un split : mauvaise communication dans l'infra openstack
-                        * les service impacté majoritairement impacté nova est neutron
-                        * Le système s'emballe à cause des timeout port en build / nova compute déconnecté
-                    </section>
-                    <section data-markdown>
-                        ### Context switching</li>
-                        * plus de 150k/s
-                        * sélection de 2 serveurs sur les 3
-
-                    </section>
-                    <section data-markdown data-separator-notes="^Note:">
-                        ### Très sensible
-                        * latence
-                        * loss
-
-                        Note:
-                        * ARNAUD
-                        * Augementation du domaine de panne si noeud pas dans le meme réseau
-                    </section>
-                </section>
-                <section>
-                    <section data-markdown data-background="data/dolphin.gif">
-                        ## MySQL
-                    </section>
-                    <section data-markdown data-separator-notes="^Note:">
-                        ### Cluster Galera
-                        * minimum 3 noeuds
-
-                        Note:
-                        * PIERRE
-                        * 2 à 3 noeuds
-                        * héberge les services cinder, nova, neutron, glance
-                    </section>
-                    <section data-markdown data-separator-notes="^Note:">
-                        ### Pas de HA proxy
-                        * Mauvaise expérience
-                        * Performances ?
-                        * En cas de problème
-                            * mécanisme custom
-                            * désactivation des serveurs connectés
-
-                        Note:
-                        * PIERRE
-                        * Exemple metadata agent
-                        * controleur répartie sur les noeuds galera
-                    </section>
-                    <section data-markdown data-separator-notes="^Note:">
-                        ### Deadlocks ?
-                        * Noeud dédié aux ecritures
-
-                        Note:
-                        * PIERRE
-                        * Keystones
-                    </section>
-                    <section data-markdown data-separator-notes="^Note:">
-                        ### Long running requests
-                        * Ralentissent les APIs
-                        * Il faut les logger
-                        * Souvent dues à la taille des tables
-                            * Purge de temps en temps
-
-                        Note:
-                        * PIERRE
-                        * 
-                    </section>
-                </section>
-                <section>
-                    <section data-markdown data-background="data/nova.gif">
-                        ## Nova
-                    </section>
-                    <section data-markdown>
-                        ### Nova API
-                        * scale assez facile
-                        * multiplication des backends
-                    </section>
-                    <section data-markdown data-separator-notes="^Note:">
-                        ### Nova custom scheduler
-                        * stack (versus spread)
-                            * race condition quand on scale
-                        * 1 host = 1 flavor
-
-                        Note:
-                         * il faut des autant de host que de flavor, on peut pas demarrer petit
-                    </section>
-                    <section data-markdown data-separator-notes="^Note:">
-                        ### Nova compute
-                        * déconnexion de rabbitmq
-                            * pas toujours de reconnexion auto
-                            * robot
-
-                        Note:
-                        * probleme avec oslo.messaging, fixe upsteam, pas facile de backport
-                    </section>
-                </section>
-                <section>
-                    <section data-markdown data-background="data/neutron.gif">
-                        ## Neutron
-                    </section>
-                    <section data-markdown data-transition="fade-out">
-                        ### Architecture standard
-                        ![Neutron Networking](data/networking_no_ovh.png)
-                    </section>
-                    <section data-markdown data-transition="fade-out">
-                        ### Architecture OVH
-                        ![Neutron Networking made in OVH](data/networking_ovh.png)
-                    </section>
-                    <section data-markdown>
-                        ### Points forts
-                        * pas de SPOF
-                            * tous les hosts font du routage
-                            * pas de neutron l3 agent
-                        * moins complexe
-                        * pas de NAT
-                    </section>
-                    <section data-markdown>
-                        ### Points faibles
-                        * pas de NAT
-                        * pas de floating IP
-                            * IP Fail Over
-                        * /32 dans la VM (/128 pour IPv6)
-                    </section>
-                </section>
-                <section>
-                    <section data-markdown data-background="data/python2.gif">
-                        ## Python
-                    </section>
-                    <section data-markdown data-separator-notes="^Note:">
-                        ## Python
-                        * multithread
-                            * GIL
-                            * eventlet (debug difficile)
-                        * multiprocess
-                            * tuning workers
-                            * memory leak
-
-                        Note:
-                        * GIL = Global Interpreter Lock
-                        * eventlet = implementation de green thread pour python
-                          * genial pour les perfs network
-                          * difficile a debug
-                          * tres utilisé dans openstack (neutron)
-                        * multiprocess plus lourd
-                    </section>
-                </section>
-                <section>
-                    <section data-markdown data-background="data/robots.gif" data-separator-notes="^Note:">
-                        ## Automatisation
-
-                        Note:
-                        On ne peut pas parler de sclaing sans parler d'automatisation
-                    </section>
-                    <section data-markdown data-separator-notes="^Note:">
-                        ## Deploy as a Service (DaaS)
-
-                        Note:
-                        * serveur = matiere premiere
-                        * api pour gerer les serveurs (install, reboot, config raid, postinstall, etc)
-                        * DaaS
-                            * gestion de flotte de serveurs (groupe, cluster)
-                            * scaling automatique des groupes
-                            * gestion cycle de vie d'un serveur auto
-                    </section>
-                    <section data-markdown data-separator-notes="^Note:">
-                        ## Puppet
-
-                        Note:
-                        * puppet gere la partie config software, apres DaaS
-                        * 1500 hosts = facile pour puppet (un pm par region)
-                    </section>
-                    <section data-markdown>
-                        ## Autres
-                        * integration continue
-                        * prodding chaque semaine
-                    </section>
-                </section>
-                <section data-markdown data-background="data/echec.gif">
-                    ## Conclusion
+                <section data-markdown data-background="data/camion_plot.gif">
+                    ## Conclusion / Questions ?
                 </section>
             </div>
         </div>
