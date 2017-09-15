@@ -70,29 +70,6 @@
                     <section data-markdown>
                         ## Neutron chez OVH
                     </section>
-                    <section data-markdown data-transition="fade-out">
-                        ### Architecture standard
-                        ![Neutron Networking](data/networking_no_ovh.png)
-                    </section>
-                    <section data-markdown data-transition="fade-out">
-                        ### Architecture OVH
-                        ![Neutron Networking made in OVH](data/networking_ovh.png)
-                    </section>
-                    <section data-markdown>
-                        ### Points forts
-                        * pas de SPOF
-                            * tous les hosts font du routage
-                            * pas de neutron l3 agent
-                        * moins complexe
-                        * pas de NAT
-                    </section>
-                    <section data-markdown>
-                        ### Points faibles
-                        * pas de NAT
-                        * pas de floating IP
-                            * IP Fail Over
-                        * /32 dans la VM (/128 pour IPv6)
-                    </section>
                 </section>
                     <section data-markdown data-separator-notes="^Note:">
                         ### 2 types de reseaux
@@ -165,8 +142,30 @@
                     <section data-markdown data-separator-notes="^Note:" data-background="data/networking1.gif">
                         ## BGP
                     </section>
+                    <section data-markdown data-separator-notes="^Note:">
+                        ### On demarre ou ?
+                        ![OpenStack](data/neutron_software_ovh4.png)
+                    </section>
+                    <section data-markdown data-transition="fade-out">
+                        ### Architecture standard
+                        ![Neutron Networking](data/networking_no_ovh.png)
+                    </section>
+                    <section data-markdown data-transition="fade-out">
+                        ### Architecture OVH
+                        ![Neutron Networking made in OVH](data/networking_ovh.png)
+                    </section>
                     <section data-markdown>
-                        # TODO
+                        ### Points forts
+                        * pas de SPOF
+                            * tous les hosts font du routage
+                            * pas de neutron l3 agent
+                        * moins complexe
+                        * pas de NAT
+                    </section>
+                    <section data-markdown data-separator-notes="^Note:" data-background="data/BGP.png" data-background-size="contain">
+                    </section>
+                    <section data-markdown>
+                        # DEMO
                     </section>
                 </section>
 
